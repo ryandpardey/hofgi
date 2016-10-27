@@ -1,8 +1,7 @@
 # Napping: HTTP for Gophers
 
-Package `napping` is a [Go][] client library for interacting with
-[RESTful APIs][].  Napping was inspired  by Python's excellent [Requests][]
-library.
+Package `hofgi` is a [Go][] client library for interacting with
+[RESTful APIs][].  Hofgi was forked from the napping library. The purpose is to support multiple formats, at the time of writing namely JSON and XML.
 
 
 ## Status
@@ -18,50 +17,14 @@ Used by, and developed in conjunction with, [Neoism][].
 
 ### Requirements
 
-Napping requires Go 1.2 or later.
+Hofgi requires Go 1.2 or later.
 
 
 ### Development
 
 ```
-go get github.com/jmcvetta/napping
+go get github.com/ryandpardey/hofgi
 ```
-
-### Stable
-
-Napping is versioned using [`gopkg.in`](http://gopkg.in).  
-
-Current release is `v3`.
-
-```
-go get gopkg.in/jmcvetta/napping.v3
-```
-
-
-## Documentation
-
-See [![GoDoc](http://godoc.org/github.com/jmcvetta/napping?status.png)](http://godoc.org/github.com/jmcvetta/napping)
-for automatically generated API documentation.
-
-Check out [github_auth_token][auth-token] for a working example
-showing how to retrieve an auth token from the Github API.
-
-
-## Support
-
-Support and consulting services are available from [Silicon Beach Heavy
-Industries](http://siliconheavy.com).
-
-
-
-## Contributing
-
-Contributions in the form of Pull Requests are gladly accepted.  Before
-submitting a PR, please ensure your code passes all tests, and that your
-changes do not decrease test coverage.  I.e. if you add new features also add
-corresponding new tests.
-
-
 ## License
 
 This is Free Software, released under the terms of the [GPL v3][].
