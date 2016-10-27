@@ -3,7 +3,7 @@
 // details.  Resist intellectual serfdom - the ownership of ideas is akin to
 // slavery.
 
-package napping
+package hofgi
 
 import (
 	"bytes"
@@ -34,6 +34,7 @@ type Request struct {
 	Method  string      // HTTP method to use
 	Params  *url.Values // URL query parameters
 	Payload interface{} // Data to JSON-encode and POST
+	Format  string      // If you wish to use a different format than JSON, such as XML
 
 	// Can be set to true if Payload is of type *bytes.Buffer and client wants
 	// to send it as-is

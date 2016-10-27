@@ -4,7 +4,7 @@
 // slavery.
 
 /*
-Package napping is a client library for interacting with RESTful APIs.
+Package hofgi is a client library for interacting with RESTful APIs.
 
 Example:
 
@@ -19,7 +19,7 @@ Example:
 	}
 	result := Spam{}
 	url := "http://foo.com/bar"
-	resp, err := napping.Post(url, &payload, &result, nil)
+	resp, err := hofgi.Post(url, &payload, &result, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -29,4 +29,4 @@ Example:
 
 See the "examples" folder for a more complete example.
 */
-package napping
+package hofgi

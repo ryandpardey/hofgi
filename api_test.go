@@ -3,7 +3,7 @@
 // details.  Resist intellectual serfdom - the ownership of ideas is akin to
 // slavery.
 
-package napping
+package hofgi
 
 import (
 	"bytes"
@@ -258,7 +258,7 @@ func TestRawRequestWithData(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(HandleRaw))
 	defer srv.Close()
 
-	var payload = bytes.NewBufferString("napping")
+	var payload = bytes.NewBufferString("hofgi")
 	res := structType{}
 	req := Request{
 		Url:        "http://" + srv.Listener.Addr().String(),
@@ -274,7 +274,7 @@ func TestRawRequestWithData(t *testing.T) {
 	}
 
 	assert.Equal(t, resp.Status(), 200)
-	assert.Equal(t, res.Bar, "napping")
+	assert.Equal(t, res.Bar, "hofgi")
 }
 
 func TestRawRequestWithoutData(t *testing.T) {
@@ -328,7 +328,7 @@ func TestRawResponse(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(HandleRaw))
 	defer srv.Close()
 
-	var payload = bytes.NewBufferString("napping")
+	var payload = bytes.NewBufferString("hofgi")
 	req := Request{
 		Url:                 "http://" + srv.Listener.Addr().String(),
 		Method:              "PUT",
@@ -345,7 +345,7 @@ func TestRawResponse(t *testing.T) {
 	assert.Equal(t, resp.Status(), 200)
 	rawResponseStruct := structType{
 		Foo: 0,
-		Bar: "napping",
+		Bar: "hofgi",
 	}
 
 	blob, err := json.Marshal(rawResponseStruct)

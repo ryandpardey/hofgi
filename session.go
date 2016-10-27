@@ -3,7 +3,7 @@
 // details.  Resist intellectual serfdom - the ownership of ideas is akin to
 // slavery.
 
-package napping
+package hofgi
 
 /*
 This module provides a Session object to manage and persist settings across
@@ -14,7 +14,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -38,6 +37,7 @@ type Session struct {
 // Send constructs and sends an HTTP request.
 func (s *Session) Send(r *Request) (response *Response, err error) {
 	r.Method = strings.ToUpper(r.Method)
+	r.Format = strings.ToLower(r.Format)
 	//
 	// Create a URL object from the raw url string.  This will allow us to compose
 	// query parameters programmatically and be guaranteed of a well-formed URL.
@@ -94,17 +94,16 @@ func (s *Session) Send(r *Request) (response *Response, err error) {
 	}
 	var req *http.Request
 	var buf *bytes.Buffer
+
 	if r.Payload != nil {
-		if r.RawPayload {
-			var ok bool
-			// buf can be nil interface at this point
-			// so we'll do extra nil check
-			buf, ok = r.Payload.(*bytes.Buffer)
-			if !ok {
-				err = errors.New("Payload must be of type *bytes.Buffer if RawPayload is set to true")
-				return
-			}
-		} else {
+		// process payload and set content type based on format
+		switch r.Format {
+		case "xml":
+			buf = r.Payload.(*bytes.Buffer)
+			header.Set("Content-Type", "application/"+r.Format)
+		// default format is JSON
+		case "json":
+		default:
 			var b []byte
 			b, err = json.Marshal(&r.Payload)
 			if err != nil {
@@ -112,6 +111,7 @@ func (s *Session) Send(r *Request) (response *Response, err error) {
 				return
 			}
 			buf = bytes.NewBuffer(b)
+			header.Set("Content-Type", "application/"+r.Format)
 		}
 		if buf != nil {
 			req, err = http.NewRequest(r.Method, u.String(), buf)
@@ -122,8 +122,6 @@ func (s *Session) Send(r *Request) (response *Response, err error) {
 			s.log(err)
 			return
 		}
-		// Overwrite the content type to json since we're pushing the payload as json
-		header.Set("Content-Type", "application/json")
 	} else { // no data to encode
 		req, err = http.NewRequest(r.Method, u.String(), nil)
 		if err != nil {
@@ -255,10 +253,11 @@ func (s *Session) Send(r *Request) (response *Response, err error) {
 }
 
 // Get sends a GET request.
-func (s *Session) Get(url string, p *url.Values, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Get(url string, p *url.Values, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
 		Method: "GET",
 		Url:    url,
+		Format: format,
 		Params: p,
 		Result: result,
 		Error:  errMsg,
@@ -267,10 +266,11 @@ func (s *Session) Get(url string, p *url.Values, result, errMsg interface{}) (*R
 }
 
 // Options sends an OPTIONS request.
-func (s *Session) Options(url string, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Options(url string, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
 		Method: "OPTIONS",
 		Url:    url,
+		Format: format,
 		Result: result,
 		Error:  errMsg,
 	}
@@ -278,10 +278,11 @@ func (s *Session) Options(url string, result, errMsg interface{}) (*Response, er
 }
 
 // Head sends a HEAD request.
-func (s *Session) Head(url string, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Head(url string, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
 		Method: "HEAD",
 		Url:    url,
+		Format: format,
 		Result: result,
 		Error:  errMsg,
 	}
@@ -289,11 +290,12 @@ func (s *Session) Head(url string, result, errMsg interface{}) (*Response, error
 }
 
 // Post sends a POST request.
-func (s *Session) Post(url string, payload, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Post(url string, payload, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
 		Method:  "POST",
 		Url:     url,
 		Payload: payload,
+		Format:  format,
 		Result:  result,
 		Error:   errMsg,
 	}
@@ -301,31 +303,33 @@ func (s *Session) Post(url string, payload, result, errMsg interface{}) (*Respon
 }
 
 // Put sends a PUT request.
-func (s *Session) Put(url string, payload, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Put(url string, payload, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
-		Method:  "PUT",
-		Url:     url,
-		Payload: payload,
-		Result:  result,
-		Error:   errMsg,
+		Method:     "PUT",
+		Url:        url,
+		Payload:    payload,
+		RawPayload: true,
+		Result:     result,
+		Error:      errMsg,
 	}
 	return s.Send(&r)
 }
 
 // Patch sends a PATCH request.
-func (s *Session) Patch(url string, payload, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Patch(url string, payload, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
-		Method:  "PATCH",
-		Url:     url,
-		Payload: payload,
-		Result:  result,
-		Error:   errMsg,
+		Method:     "PATCH",
+		Url:        url,
+		Payload:    payload,
+		RawPayload: true,
+		Result:     result,
+		Error:      errMsg,
 	}
 	return s.Send(&r)
 }
 
 // Delete sends a DELETE request.
-func (s *Session) Delete(url string, p *url.Values, result, errMsg interface{}) (*Response, error) {
+func (s *Session) Delete(url string, p *url.Values, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
 		Method: "DELETE",
 		Url:    url,
