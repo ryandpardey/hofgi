@@ -1,4 +1,4 @@
-# Napping: HTTP for Gophers
+# Hofgi: HTTP for Gophers
 
 Package `hofgi` is a [Go][] client library for interacting with
 [RESTful APIs][].  Hofgi was forked from the napping library. The purpose is to support multiple formats, at the time of writing namely JSON and XML.
