@@ -305,12 +305,12 @@ func (s *Session) Post(url string, payload, result, errMsg interface{}, format s
 // Put sends a PUT request.
 func (s *Session) Put(url string, payload, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
-		Method:     "PUT",
-		Url:        url,
-		Payload:    payload,
-		RawPayload: true,
-		Result:     result,
-		Error:      errMsg,
+		Method:  "PUT",
+		Url:     url,
+		Payload: payload,
+		Format:  format,
+		Result:  result,
+		Error:   errMsg,
 	}
 	return s.Send(&r)
 }
@@ -318,12 +318,12 @@ func (s *Session) Put(url string, payload, result, errMsg interface{}, format st
 // Patch sends a PATCH request.
 func (s *Session) Patch(url string, payload, result, errMsg interface{}, format string) (*Response, error) {
 	r := Request{
-		Method:     "PATCH",
-		Url:        url,
-		Payload:    payload,
-		RawPayload: true,
-		Result:     result,
-		Error:      errMsg,
+		Method:  "PATCH",
+		Url:     url,
+		Payload: payload,
+		Format:  format,
+		Result:  result,
+		Error:   errMsg,
 	}
 	return s.Send(&r)
 }
@@ -334,6 +334,7 @@ func (s *Session) Delete(url string, p *url.Values, result, errMsg interface{}, 
 		Method: "DELETE",
 		Url:    url,
 		Params: p,
+		Format: format,
 		Result: result,
 		Error:  errMsg,
 	}
